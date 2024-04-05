@@ -11,8 +11,10 @@ const API_BASE_URL = 'http://localhost:3000/api';
 function App() {
   const [todos, setTodos] = useState([]);
   const [authenticated, setAuthenticated] = useState(false);
-  const [showSignup, setShowSignup] = useState(false); // Initialize to false
-  const [showLogin, setShowLogin] = useState(false); // Initialize to false
+  const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchTodos();
@@ -22,46 +24,22 @@ function App() {
   const fetchTodos = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/todos`);
-      setTodos(response.data);
+      setTodos(response.data.todos);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching todos:', error);
+      setError('Failed to fetch todos');
+      setLoading(false);
     }
   };
 
   const checkAuthentication = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/auth/check`);
-      if (response.status === 200) {
-        setAuthenticated(true);
-      } else {
-        setAuthenticated(false);
-      }
+      setAuthenticated(response.data.isAuthenticated);
     } catch (error) {
       console.error('Error checking authentication:', error);
       setAuthenticated(false);
-    }
-  };
-
-  const handleLogin = async (credentials) => {
-    try {
-      const response = await axios.post(`${API_BASE_URL}/login`, credentials);
-      if (response.status === 200) {
-        setAuthenticated(true);
-      } else {
-        console.error('Error logging in:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
-    }
-  };
-
-  const handleSignup = async (userData) => {
-    try {
-      console.log('Signup form submitted with data:', userData);
-      await axios.post(`${API_BASE_URL}/signup`, userData);
-      setShowSignup(false); // Hide signup form after successful signup
-    } catch (error) {
-      console.error('Error signing up:', error);
     }
   };
 
@@ -74,10 +52,32 @@ function App() {
     }
   };
 
+  const handleSignup = async (userData) => {
+    try {
+      // Perform signup action here
+      console.log('Signup data:', userData);
+      setAuthenticated(true); // Update authentication state
+      setShowSignup(false); // Hide signup form after successful signup
+    } catch (error) {
+      console.error('Error signing up:', error);
+    }
+  };
+
+  const handleLogin = async (userData) => {
+    try {
+      // Perform login action here
+      console.log('Login data:', userData);
+      setAuthenticated(true); // Update authentication state
+      setShowLogin(false); // Hide login form after successful login
+    } catch (error) {
+      console.error('Error logging in:', error);
+    }
+  };
+
   const handleAddTodo = async (newTodo) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/todos`, newTodo);
-      setTodos([...todos, response.data]);
+      setTodos([...todos, response.data.todo]);
     } catch (error) {
       console.error('Error adding todo:', error);
     }
@@ -102,6 +102,14 @@ function App() {
     }
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="App" align-items="center">
       <h1>Todo App</h1>
@@ -124,5 +132,3 @@ function App() {
 }
 
 export default App;
-
-

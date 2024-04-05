@@ -16,7 +16,7 @@ const SignupForm = ({ onSignup }) => {
         password
       });
       // If signup is successful, invoke the onSignup callback
-      alert("ok");
+      alert(" signup ok");
       onSignup(response.data);
     } catch (error) {
       console.error('Error signing up:', error);
