@@ -6,7 +6,7 @@ const TodoList = ({ todos, onDelete, onUpdate }) => {
   const handleToggleComplete = async (id, status) => {
     try {
       const updatedTodo = { status: !status };
-      await axios.put(`https://contentqltask1.vercel.app/api/todos/${id}`, updatedTodo);
+      await axios.put(`http://localhost:5000/api/todos/${id}`, updatedTodo);
       onUpdate(id, updatedTodo);
     } catch (error) {
       console.error('Error toggling todo complete:', error);
