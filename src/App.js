@@ -6,7 +6,7 @@ import SignupForm from './SignupForm';
 import axios from 'axios';
 import './App.css';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://contentqltask1.vercel.app/api';
 
 function App() {
   const [todos, setTodos] = useState([]);
